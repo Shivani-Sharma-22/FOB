@@ -49,9 +49,6 @@ const uploadsDir = path.join(__dirname, '../uploads');
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
-
-const cors = require("cors");
-
 app.use(cors({
   origin: ["http://localhost:5173", "https://fob-manage.netlify.app"],
   methods: ["GET", "POST", "PUT", "DELETE"],
