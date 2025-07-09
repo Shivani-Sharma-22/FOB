@@ -13,6 +13,10 @@ import rewardRoutes from './routes/rewardRoutes.js';
 import User from './models/userModel.js';
 
 dotenv.config();
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://foot-over-bridge.netlify.app/'
+];
 
 const initializeAdmin = async () => {
   try {
@@ -50,11 +54,20 @@ if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
 app.use(cors({
-  origin: ["http://localhost:5173", "https://fob-manage.netlify.app"],
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true
 }));
+
+// ✅ Handle preflight requests explicitly
 app.options('*', cors());
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
